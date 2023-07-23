@@ -1,16 +1,24 @@
 package com.itcraftsolution.to_do_notes.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.os.ProxyFileDescriptorCallback;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.itcraftsolution.to_do_notes.Activities.AddNotesActivity;
+import com.itcraftsolution.to_do_notes.Fragments.AddNotesFragment;
 import com.itcraftsolution.to_do_notes.Models.Notes;
 import com.itcraftsolution.to_do_notes.R;
 import com.itcraftsolution.to_do_notes.databinding.RvSampleNotesBinding;
+import com.itcraftsolution.to_do_notes.spf.PrefConfig;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -38,6 +46,14 @@ public class RvNotesRecyclerAdapter extends RecyclerView.Adapter<RvNotesRecycler
         holder.binding.txNotesTitle.setText(notes.getTitle());
         holder.binding.txNotesDesc.setText(notes.getDesc());
         holder.binding.txNotesDate.setText(notes.getDate());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PrefConfig.updateNotes(context, notes.getId(), holder.getAdapterPosition(), notes.getTitle(), notes.getDesc(), notes.getDate(), true);
+                context.startActivity(new Intent(context, AddNotesActivity.class));
+            }
+        });
     }
 
     @Override

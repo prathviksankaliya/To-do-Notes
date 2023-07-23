@@ -30,4 +30,16 @@ public class PrefConfig {
         ArrayList<Notes> list = gson.fromJson(notes, type);
         return list;
     }
+
+    public static void updateNotes(Context context, int id, int pos, String title, String desc, String date, boolean update){
+        SharedPreferences spf = context.getSharedPreferences("UpdateNotes", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = spf.edit();
+        edit.putString("title", title);
+        edit.putInt("id", id);
+        edit.putString("desc", desc);
+        edit.putString("date", date);
+        edit.putInt("position", pos);
+        edit.putBoolean("insert", update);
+        edit.apply();
+    }
 }
