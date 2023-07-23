@@ -14,6 +14,13 @@ public class Notes {
         this.pin = pin;
     }
 
+    public Notes(String title, String desc, String date, boolean pin) {
+        this.title = title;
+        this.desc = desc;
+        this.date = date;
+        this.pin = pin;
+    }
+
     public int getId() {
         return id;
     }

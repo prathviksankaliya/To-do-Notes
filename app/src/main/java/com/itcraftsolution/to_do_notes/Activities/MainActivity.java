@@ -12,6 +12,7 @@ import com.itcraftsolution.to_do_notes.Models.Notes;
 import com.itcraftsolution.to_do_notes.R;
 import com.itcraftsolution.to_do_notes.databinding.ActivityMainBinding;
 import com.itcraftsolution.to_do_notes.databinding.ActivitySpalshBinding;
+import com.itcraftsolution.to_do_notes.spf.PrefConfig;
 
 import java.util.ArrayList;
 
@@ -27,9 +28,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        list = new ArrayList<>();
+
+        list = PrefConfig.readNotesInSpf(MainActivity.this);
+        if(list == null){
+            list = new ArrayList<>();
+        }
         adapter = new RvNotesRecyclerAdapter(list, this);
         binding.rvAllNotes.setLayoutManager(new GridLayoutManager(this, 2));
+        binding.rvAllNotes.setHasFixedSize(false);
         binding.rvAllNotes.setAdapter(adapter);
 
         binding.btnFabAddNotes.setOnClickListener(new View.OnClickListener() {
@@ -40,4 +46,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        list = PrefConfig.readNotesInSpf(MainActivity.this);
+        if(list == null){
+            list = new ArrayList<>();
+        }
+        adapter = new RvNotesRecyclerAdapter(list, this);
+        binding.rvAllNotes.setLayoutManager(new GridLayoutManager(this, 2));
+        binding.rvAllNotes.setHasFixedSize(false);
+        binding.rvAllNotes.setAdapter(adapter);
+    }
 }

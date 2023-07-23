@@ -1,5 +1,7 @@
 package com.itcraftsolution.to_do_notes.Fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -14,14 +16,18 @@ import com.itcraftsolution.to_do_notes.Activities.AddNotesActivity;
 import com.itcraftsolution.to_do_notes.Models.Notes;
 import com.itcraftsolution.to_do_notes.R;
 import com.itcraftsolution.to_do_notes.databinding.FragmentAddNotesBinding;
+import com.itcraftsolution.to_do_notes.spf.PrefConfig;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
 public class AddNotesFragment extends Fragment {
 
     private FragmentAddNotesBinding binding;
+    private boolean pin = false;
+    private ArrayList<Notes> list;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -29,6 +35,10 @@ public class AddNotesFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentAddNotesBinding.inflate(getLayoutInflater());
 
+        list = PrefConfig.readNotesInSpf(requireContext());
+        if(list == null){
+            list = new ArrayList<>();
+        }
         String date = new SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault()).format(new Date());
         binding.txEditDate.setText(date);
 
@@ -55,16 +65,18 @@ public class AddNotesFragment extends Fragment {
                             .show();
                     binding.edNotes.requestFocus();
                 } else {
-                    Notes notes = new Notes(binding.edTitle.getText().toString().trim(), binding.edNotes.getText().toString().trim(), date, pin, selectedNoteColor);
+                    Notes notes = new Notes(binding.edTitle.getText().toString().trim(), binding.edNotes.getText().toString().trim(), date, pin);
                     if (binding.btnAddNoteSave.getText().toString().equals("Save")) {
-                        notesViewModel.addNotes(notes);
-                        Toast.makeText(AddNotesActivity.this, "Notes Saved!!", Toast.LENGTH_SHORT).show();
-                    } else if (binding.btnAddNoteSave.getText().toString().equals("Update")) {
-                        Notes updateNotes = new Notes(id, binding.edTitle.getText().toString().trim(), binding.edNotes.getText().toString().trim(), date, pin, selectedNoteColor);
-                        notesViewModel.updateNotes(updateNotes);
-                        Toast.makeText(AddNotesActivity.this, "Notes Updated!!", Toast.LENGTH_SHORT).show();
+                        list.add(notes);
+                        PrefConfig.writeNotesInSpf(requireContext(), list);
+                        Toast.makeText(requireContext(), "Notes Saved!!", Toast.LENGTH_SHORT).show();
                     }
-                    finish();
+//                    else if (binding.btnAddNoteSave.getText().toString().equals("Update")) {
+//                        Notes updateNotes = new Notes(id, binding.edTitle.getText().toString().trim(), binding.edNotes.getText().toString().trim(), date, pin, selectedNoteColor);
+//                        notesViewModel.updateNotes(updateNotes);
+//                        Toast.makeText(AddNotesActivity.this, "Notes Updated!!", Toast.LENGTH_SHORT).show();
+//                    }
+                    requireActivity().finish();
                 }
             }
         });

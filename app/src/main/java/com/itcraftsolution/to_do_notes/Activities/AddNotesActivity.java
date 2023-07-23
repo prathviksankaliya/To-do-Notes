@@ -23,4 +23,10 @@ public class AddNotesActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frCotainer, new AddNotesFragment()).addToBackStack(null).commit();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }
